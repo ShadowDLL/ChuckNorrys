@@ -63,13 +63,17 @@ class Core
 			{
 				$this->file = CK_APPLICATION . 'views/' . $this->file;
 			}
+			else if ( $this->type == 'error' )
+			{
+				$this->file = CK_APPLICATION . 'views/error/' . $this->file;
+			}
+			else if ( $this->type == 'config' )
+			{
+				$this->file = CK_APPLICATION . 'config/' . $this->file;
+			}
 			else if ( empty ( $yhis->type ) )
 			{
 				$this->file = CK_APPLICATION . 'controllers/' . $this->file;
-			}
-			else if ( $this->type = 'error' )
-			{
-				$this->file = CK_APPLICATION . 'views/error/' . $this->file;
 			}
 
 			/**

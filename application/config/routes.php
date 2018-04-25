@@ -2,7 +2,9 @@
 /**
  * Errors
 **/
-$route [ 'error_404' ] = "";
+$route [ 'error_404' ] = array (
+	'Controller' => 'Welcome'
+);
 
 /**
  * REQUIRED
@@ -12,12 +14,4 @@ $route [ 'error_404' ] = "";
 **/
 $route [ 'default' ] = array (
 	'Controller' => 'Welcome'
-);
-
-/**
- * OUTHERS
-**/
-$route [ 'products/edit/(:num)' ] = array (
-	'Controller' => 'Products',
-	'Method' => 'edit'
 );

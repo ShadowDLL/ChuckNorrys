@@ -1,11 +1,14 @@
 <?php
+require_once CK_SYSTEM . 'core/Core.php';
+require_once CK_SYSTEM . 'core/Router.php';
+require_once CK_SYSTEM . 'core/Controller.php';
+require_once CK_SYSTEM . 'core/View.php';
+
 /**
  * ChuckNorrys
  *
  * Construct FrameWork
 **/
-
-require_once CK_SYSTEM . 'core/Core.php';
 
 class ChuckNorrys extends Core
 {
@@ -30,6 +33,11 @@ class ChuckNorrys extends Core
 	private $controller;
 
 	/**
+	 * Method
+	**/
+	private $method;
+
+	/**
 	 * Construct Parent
 	 *
 	 * Create ChuckNorrys
@@ -48,45 +56,61 @@ class ChuckNorrys extends Core
 	}
 
 	/**
-	 * Load Core
-	**/
-	/**
-	private function __autoload ($file)
-	{
-		$this->file = CK_SYSTEM . 'core/' . $file . '.php';
-
-		if ( ! ( file_exists ( $this->file ) ) )
-		{
-			return FALSE;
-		}
-
-		require_once $this->file;
-	}
-	**/
-
-	/**
 	 * Load URL
 	**/
 	private function loadUrl ()
 	{
-		require_once CK_SYSTEM . 'core/Controller.php';
-		require_once CK_SYSTEM . 'core/View.php';
-
 		if ( isset ( $_GET [ 'path' ] ) )
 		{
-			require_once  CK_SYSTEM . 'core/Router.php';
-
+			/**
+			 * Addslashes
+			**/
 			$this->path = addslashes ( $_GET [ 'path' ] );
+
+			/**
+			 * Construct Router
+			**/
 			$this->uri = new Router ( $this->path );
 
-			if ( $this->uri != FALSE )
+			if ( $this->uri->controller != FALSE )
 			{
+				$this->controller = new Controller ();
 
+				if ( $this->uri->method != FALSE )
+				{
+					$this->controller->load ( $this->uri->controller, $this->uri->method );
+				}
+				else
+				{
+					$this->controller->load ( $this->uri->controller, 'index' );
+				}
+			}
+			else
+			{
+				$this->show_404 ();
 			}
 		}
 		else
 		{
-			$this->controller = new Controller;
+			$this->uri = new Router ( 'default' );
+
+			if ( $this->uri->controller != FALSE )
+			{
+				$this->controller = new Controller ();
+
+				if ( $this->uri->method != FALSE )
+				{
+					$this->controller->load ( $this->uri->controller, $this->uri->method );
+				}
+				else
+				{
+					$this->controller->load ( $this->uri->controller, 'index' );
+				}
+			}
+			else
+			{
+				$this->show_404 ();
+			}
 		}
 	}
 }

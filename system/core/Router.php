@@ -4,14 +4,20 @@
  *
  * Generate URL Routes
 */
-class Router
+class Router extends Core
 {
 	/**
 	 * URL Path
 	**/
 	public $path;
-	public $action;
+	public $method;
 	public $controller;
+
+	/**
+	 * For Load
+	**/
+	private $url;
+	private $router = array ();
 
 	/**
 	 * Construct Router
@@ -22,142 +28,118 @@ class Router
 
 		if ( ! ( empty ( $this->path ) ) )
 		{
-			$this->urlData ();
+			$this->uri ();
+		}
+		else
+		{
+			$this->show_404 ();
 		}
 	}
 
 	/**
-	* Get data in url
-	*
-	* If the url is != from base_url, them this system
-	* will verify the param in routes config using this
-	* method:
-	*
-	* Example:
-	*
-	* base_url: http://127.0.0.1/ChuckNorrys/
-	* current_url: http://127.0.0.1/ChuckNorrys/products/add/1
-	*
-	* The system  will verify the param: products/add/1
-	* in routes config and will fild this var:
-	* $route[ 'products/add/(:num)' ] = "Product/AddProduct/$1";
-	*
-	* When the system find this route in the config, the system
-	* will explode the param and explode "Product/AddProduct/$1", 
-	* and return
-	*
-	* # URL products/add/1
-	*
-	* [0] => "products",
-	* [1] => "add",
-	* [2] => 1
-	*
-	* # ROUTE ARRAY "Product/AddProduct/$1"
-	*
-	* [0] => "",
-	* [1] => "",
-	* [2] => ""
-	*
-	*
-	*
-	*
-	*
-	*
+	 * Get data in url
 	**/
-	private function urlData ()
+	private function uri ()
 	{
 		/**
-		 * Check URL
+		 * Check Config
 		**/
-		if ( isset ( $this->path ) )
+		if ( $this->fileExists ('routes.php', 'config') != FALSE )
 		{
 			/**
-			 * 1 - Remove the '/' from the end of the $this->path
-			 * 2 - Remove invalid chars in $this->path
+			 * Load Routes.php
 			**/
-			$this->path = rtrim ( $this->path, '/' );
-			$this->path = filter_var ( $this->path, FILTER_SANITIZE_URL );
+			require_once CK_APPLICATION . 'config/routes.php';
 
 			/**
-			 * Generate a Array from $this->path
+			 * Check URL
 			**/
-			$this->path = explode ( '/' , $this->path );
-
-			/**
-			 * Load Config's
-			 *
-			 * 1 - Load Controller
-			 * 2 - Create Action
-			**/
-			$this->controller 	= $this->path [ 0 ];
-			$this->action 		= $this->path [ 1 ];
-
-			/**
-			 * Generate a Configuration from Paramns
-			**/
-			if ( isset ( $this->path [ 2 ] ) )
+			if ( isset ( $this->path ) )
 			{
 				/**
-				 * Destroy the datas inside the Array
-				 *
-				 * 1 - Destroy the Controller
-				 * 2 - Destroy the Method
+				 * 1 - Remove the '/' from the end of the $this->path
+				 * 2 - Remove invalid chars in $this->path
 				**/
-				unset ( $this->path [ 0 ] );
-				unset ( $this->path [ 1 ] );
-				
+				$this->path = rtrim ( $this->path, '/' );
+				$this->path = filter_var ( $this->path, FILTER_SANITIZE_URL );
+
 				/**
-				 * Return all values from Array
+				 * Generate a Array from $this->path
 				**/
-				$this->param = array_values ( $this->path );
-			}
+				$this->path = explode ( '/' , $this->path );
 
-			// DEBUG
-			//
-			// echo $this->controller . '<br>';
-			// echo $this->action . '<br>';
-			// echo '<pre>';
-			// print_r( $this->param );
-			// echo '</pre>';
-		}
-	}
-
-	/**
-	 * Get Segment
-	 *
-	 * The sistem will count the array in $this->param
-	 * and if exists any value, the sistem will return this.
-	**/
-	public function segment ( $position = '' )
-	{
-		if ( isset ( $this->param ) )
-		{
-			if ( ! ( empty ( $position ) ) || ( $position == 0 ) )
-			{
-				if ( sizeof ( $this->param ) > 0 )
+				/**
+				 * Verifica se existem parâmetros númeriicos na url
+				**/
+				for ( $i = 0; $i < count ($this->path); $i++ )
 				{
-					if ( in_array ( $position, $this->param ) )
+					if ( is_numeric ( $this->path[$i] ) )
 					{
-						return $this->param [ $position ];
+						$this->path[$i] = "(:num)/";
 					}
 					else
 					{
-						return FALSE;
+						$this->path[$i] = $this->path[$i] . '/';
+					}
+
+					$this->url .= $this->path[$i];
+				}
+
+				/**
+				 * 1 - Remove the '/' from the end of the $this->path
+				**/
+				$this->path = rtrim ( $this->url, '/' );
+
+				/**
+				 * Check Array
+				**/
+				if ( isset ( $route [ $this->path ] ) )
+				{
+					/**
+					 * Create Router
+					**/
+					$this->router = $route [ $this->path ];
+
+					/**
+					 * Check Controller
+					**/
+					if ( isset ( $this->router [ 'Controller' ] ) )
+					{
+						/**
+						 * Construct Controller
+						**/
+						$this->controller = $this->router [ 'Controller' ];
+
+						/**
+						 * Construct Method
+						**/
+						if ( isset ( $this->router [ 'Method' ] ) )
+						{
+							$this->method = $this->router [ 'Method' ];
+						}
+						else
+						{
+							$this->method = FALSE;
+						}
+					}
+					else
+					{
+						$this->controller = FALSE;
 					}
 				}
 				else
 				{
-					return FALSE;
+					$this->controller = FALSE;
 				}
 			}
 			else
 			{
-				return FALSE;
+				$this->show_404 ();
 			}
 		}
 		else
 		{
-			return FALSE;
+			$this->show_404 ();
 		}
 	}
 }

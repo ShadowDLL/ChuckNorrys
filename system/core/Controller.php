@@ -12,16 +12,7 @@ class Controller extends Core
 	 *
 	 * @var String
 	**/
-	private $load;
-
-	/**
-	 * For Layout
-	 *
-	 * @var String
-	 * @var Array
-	**/
-	private $view;
-	private $data;
+	public $load;
 
 	/**
 	 * Files
@@ -31,9 +22,16 @@ class Controller extends Core
 	private $file;
 
 	/**
+	 * Controller
+	 *
+	 * @var String
+	**/
+	private $controller;
+
+	/**
 	 * Construct Parent
 	**/
-	public function __construct ( $options = array() )
+	public function __construct ()
 	{
 		/**
 		 * Parent
@@ -41,25 +39,70 @@ class Controller extends Core
 		parent::__construct ();
 
 		/**
-		 * Check Controller
+		 * Load
 		**/
-		if ( ! ( empty ( $options ) ) )
+		if ( ! ( isset ( $this->load ) ) )
 		{
-			$this->loadController ();
-		}
-		else
-		{
-			$this->welcome ();
+			$this->load = new View;
 		}
 	}
 
 	/**
-	 * 
-	 *
-	 *
+	 * Load Controller
 	**/
-	private function welcome ()
+	public function load ( $controller, $method )
 	{
-		$this->load->view('Welcome');
+		/**
+		 * Construct File
+		**/
+		$this->file = $controller . '.php';
+
+		/**
+		 * Check File
+		**/
+		if ( $this->fileExists ( $this->file ) != FALSE)
+		{
+			/**
+			 * Load Controller
+			**/
+			require_once CK_APPLICATION . 'controllers/' . $this->file;
+
+			/**
+			 * Load View
+			**/
+			$this->load = new View;
+
+			/**
+			 * Check Method
+			**/
+			if ( $method != 'index' )
+			{
+				/**
+				 * Construct
+				**/
+				$this->controller = new $controller;
+
+				/**
+				 * Call Method
+				**/
+				$this->controller->$method ();
+			}
+			else
+			{
+				/**
+				 * Construct
+				**/
+				$this->controller = new $controller;
+
+				/**
+				 * Call Method
+				**/
+				$this->controller->index ();
+			}
+		}
+		else
+		{
+			$this->show_404 ();
+		}
 	}
 }

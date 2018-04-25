@@ -9,8 +9,8 @@ class Welcome extends Controller
 		parent::__construct();
 	}
 
-	public function index()
+	public function index ()
 	{
-		$this->load->view('productEdit');
+		$this->load->view ('welcome');
 	}
 }
