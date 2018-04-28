@@ -1,8 +1,8 @@
 <?php
 /**
- * Configuration
- *
- * Type: Database
+ * @author @ShadowDLL
+ * @version 0.8
+ * @package ChuckFramework
 **/
 
 /**
@@ -10,21 +10,21 @@
  *
  * Default: mysql
 **/
-define ( 'DB_DBDRIVER', 'mysqli' );
+define ( 'DB_DBDRIVER', 'mysql' );
 
 /**
  * DB HOSTNAME
  *
  * Default: localhost
 **/
-define ( 'DB_HOSTNAME', 'localhost' );
+define ( 'DB_HOSTNAME', '127.0.0.1' );
 
 /**
  * DB USERNAME
  *
  * Default: root
 **/
-define ( 'DB_USERNAME', '' );
+define ( 'DB_USERNAME', 'root' );
 
 /**
  * DB PASSWORD
@@ -38,7 +38,7 @@ define ( 'DB_PASSWORD', '' );
  *
  * Example: chuck_db
 **/
-define ( 'DB_DATABASE', '' );
+define ( 'DB_DATABASE', 'ck_data' );
 
 /**
  * DB CHARSET

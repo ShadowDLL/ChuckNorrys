@@ -1,10 +1,11 @@
 <?php
 /**
- * CK_Router
- *
- * Generate URL Routes
-*/
-class Router extends Core
+ * @author @ShadowDLL
+ * @version 0.8
+ * @package ChuckFramework
+**/
+
+class CK_Router extends CK_Core
 {
 	/**
 	 * URL Path
@@ -44,7 +45,7 @@ class Router extends Core
 		/**
 		 * Check Config
 		**/
-		if ( $this->fileExists ('routes.php', 'config') != FALSE )
+		if ( $this->fileExists ( 'routes.php', 'config' ) != FALSE )
 		{
 			/**
 			 * Load Routes.php
@@ -71,18 +72,18 @@ class Router extends Core
 				/**
 				 * Verifica se existem parâmetros númeriicos na url
 				**/
-				for ( $i = 0; $i < count ($this->path); $i++ )
+				for ( $i = 0; $i < count ( $this->path ); $i++ )
 				{
-					if ( is_numeric ( $this->path[$i] ) )
+					if ( is_numeric ( $this->path [ $i ] ) )
 					{
-						$this->path[$i] = "(:num)/";
+						$this->path [ $i ] = "(:num)/";
 					}
 					else
 					{
-						$this->path[$i] = $this->path[$i] . '/';
+						$this->path [ $i ] = $this->path [ $i ] . '/';
 					}
 
-					$this->url .= $this->path[$i];
+					$this->url .= $this->path [ $i ];
 				}
 
 				/**

@@ -1,19 +1,12 @@
 <?php
 /**
  * @author @ShadowDLL
- * @version 0.1
+ * @version 0.8
  * @package ChuckFramework
 **/
 
-class Controller extends Core
+class CK_Controller extends CK_Core
 {
-	/**
-	 * Load
-	 *
-	 * @var String
-	**/
-	public $load;
-
 	/**
 	 * Files
 	 *
@@ -29,6 +22,27 @@ class Controller extends Core
 	private $controller;
 
 	/**
+	 * Load
+	 *
+	 * @var String
+	**/
+	public $load;
+
+	/**
+	 * Db
+	 *
+	 * @var String
+	**/
+	public $db;
+
+	/**
+	 * Data
+	 *
+	 * @var Array
+	**/
+	public $data = array ();
+
+	/**
 	 * Construct Parent
 	**/
 	public function __construct ()
@@ -39,18 +53,21 @@ class Controller extends Core
 		parent::__construct ();
 
 		/**
-		 * Load
+		 * Check Load
 		**/
 		if ( ! ( isset ( $this->load ) ) )
 		{
-			$this->load = new View;
+			/**
+			 * Load View
+			**/
+			$this->load = new CK_View;
 		}
 	}
 
 	/**
 	 * Load Controller
 	**/
-	public function load ( $controller, $method )
+	public function create ( $controller, $method )
 	{
 		/**
 		 * Construct File
@@ -66,11 +83,6 @@ class Controller extends Core
 			 * Load Controller
 			**/
 			require_once CK_APPLICATION . 'controllers/' . $this->file;
-
-			/**
-			 * Load View
-			**/
-			$this->load = new View;
 
 			/**
 			 * Check Method
@@ -102,7 +114,50 @@ class Controller extends Core
 		}
 		else
 		{
+			/**
+			 * Error
+			**/
 			$this->show_404 ();
+		}
+	}
+
+	/**
+	 * Load Model
+	**/
+	public function model ( $model )
+	{
+		/**
+		 * Check Isset
+		**/
+		if ( isset ( $model ) )
+		{
+			/**
+			 * Fix Model
+			**/
+			$this->db = $model . '.php';
+
+			/**
+			 * Check File
+			**/
+			if ( $this->fileExists ( $this->db, 'model' ) != FALSE )
+			{
+				/**
+				 * Load Model
+				**/
+				require_once CK_APPLICATION . 'models/' . $this->db;
+
+				/**
+				 * Load Model
+				**/
+				$this->db = new $model;
+			}
+			else
+			{
+				/**
+				 * Error
+				**/
+				$this->show_404 ();
+			}
 		}
 	}
 }

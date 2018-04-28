@@ -1,5 +1,11 @@
 <?php
 /**
+ * @author @ShadowDLL
+ * @version 0.8
+ * @package ChuckFramework
+**/
+
+/**
  * Errors
 **/
 $route [ 'error_404' ] = array (

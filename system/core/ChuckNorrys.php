@@ -1,26 +1,32 @@
 <?php
+/**
+ * @author @ShadowDLL
+ * @version 0.8
+ * @package ChuckFramework
+**/
+
+/**
+ * Start Session
+**/
+session_start ();
+
+/**
+ * Load Files
+**/
 require_once CK_SYSTEM . 'core/Core.php';
 require_once CK_SYSTEM . 'core/Router.php';
 require_once CK_SYSTEM . 'core/Controller.php';
 require_once CK_SYSTEM . 'core/View.php';
 
-/**
- * ChuckNorrys
- *
- * Construct FrameWork
-**/
+require_once CK_SYSTEM . 'core/database/DB.php';
+require_once CK_SYSTEM . 'core/database/Database.php';
 
-class ChuckNorrys extends Core
+class ChuckNorrys extends CK_Core
 {
 	/**
 	 * URL Path
 	**/
 	private $path;
-
-	/**
-	 * Class Autoload
-	**/
-	private $file;
 
 	/**
 	 * Router
@@ -60,6 +66,29 @@ class ChuckNorrys extends Core
 	**/
 	private function loadUrl ()
 	{
+		/**
+		 * Check Debug
+		**/
+		if ( ( ! ( defined ( 'CK_DEBUG' ) ) ) || ( CK_DEBUG == FALSE ) )
+		{
+			/**
+			 * Hidden Errors
+			**/
+			error_reporting ( 0 );
+			ini_set ( 'display_errors', 0 );
+		}
+		else
+		{
+			/**
+			 * Display Errors
+			**/
+			error_reporting ( E_ALL );
+			ini_set ( 'display_errors', 1 );
+		}
+
+		/**
+		 * Check URL
+		**/
 		if ( isset ( $_GET [ 'path' ] ) )
 		{
 			/**
@@ -68,51 +97,93 @@ class ChuckNorrys extends Core
 			$this->path = addslashes ( $_GET [ 'path' ] );
 
 			/**
-			 * Construct Router
+			 * Construct CK_Router
 			**/
-			$this->uri = new Router ( $this->path );
+			$this->uri = new CK_Router ( $this->path );
 
+			/**
+			 * Check Controller
+			**/
 			if ( $this->uri->controller != FALSE )
 			{
-				$this->controller = new Controller ();
+				/**
+				 * Load CK_Controller
+				**/
+				$this->controller = new CK_Controller ();
 
+				/**
+				 * Check Method
+				**/
 				if ( $this->uri->method != FALSE )
 				{
-					$this->controller->load ( $this->uri->controller, $this->uri->method );
+					/**
+					 * Construct Object
+					**/
+					$this->controller->create ( $this->uri->controller, $this->uri->method );
 				}
 				else
 				{
-					$this->controller->load ( $this->uri->controller, 'index' );
+					/**
+					 * Construct Object
+					**/
+					$this->controller->create ( $this->uri->controller, 'index' );
 				}
 			}
 			else
 			{
+				/**
+				 * Error
+				**/
 				$this->show_404 ();
 			}
 		}
 		else
 		{
-			$this->uri = new Router ( 'default' );
+			/**
+			 * Load CK_Router
+			**/
+			$this->uri = new CK_Router ( 'default' );
 
+			/**
+			 * Check Controller
+			**/
 			if ( $this->uri->controller != FALSE )
 			{
-				$this->controller = new Controller ();
+				/**
+				 * Load CK_Controller
+				**/
+				$this->controller = new CK_Controller ();
 
+				/**
+				 * Check Method
+				**/
 				if ( $this->uri->method != FALSE )
 				{
-					$this->controller->load ( $this->uri->controller, $this->uri->method );
+					/**
+					 * Construct Object
+					**/
+					$this->controller->create ( $this->uri->controller, $this->uri->method );
 				}
 				else
 				{
-					$this->controller->load ( $this->uri->controller, 'index' );
+					/**
+					 * Construct Object
+					**/
+					$this->controller->create ( $this->uri->controller, 'index' );
 				}
 			}
 			else
 			{
+				/**
+				 * Error
+				**/
 				$this->show_404 ();
 			}
 		}
 	}
 }
 
+/**
+ * Load ChuckNorrys
+**/
 $chuck = new ChuckNorrys ();

@@ -1,6 +1,11 @@
 <?php
+/**
+ * @author @ShadowDLL
+ * @version 0.8
+ * @package ChuckFramework
+**/
 
-class View extends Core
+class CK_View extends CK_Core
 {
 	/**
 	 * View file
@@ -10,10 +15,20 @@ class View extends Core
 	private $file;
 
 	/**
+	 * View file
+	 *
+	 * @var string
+	**/
+	public $data;
+
+	/**
 	 * Construct
 	**/
 	public function __construct()
 	{
+		/**
+		 * Construct Parent
+		**/
 		parent::__construct();
 	}
 
@@ -22,7 +37,7 @@ class View extends Core
 	 *
 	 * @param $file
 	**/
-	public function view ( $file )
+	public function view ( $file, $data = '' )
 	{
 		if ( ( isset ( $file ) ) && ( ! ( empty ( $file ) ) ) )
 		{
@@ -30,6 +45,21 @@ class View extends Core
 			 * Set Attributes
 			**/
 			$this->file = $file;
+			$this->data = $data;
+
+			/**
+			 * Set Content
+			**/
+			if ( ! ( empty ( $this->data ) ) )
+			{
+				/**
+				 * Set Clean Var
+				**/
+				foreach ( $this->data as $key => $val )
+				{
+					$$key = $val;
+				}
+			}
 
 			/**
 			 * Loader
@@ -38,6 +68,9 @@ class View extends Core
 		}
 		else
 		{
+			/**
+			 * Error
+			**/
 			$this->show_404 ();
 		}
 	}

@@ -1,6 +1,11 @@
 <?php
+/**
+ * @author @ShadowDLL
+ * @version 0.8
+ * @package ChuckFramework
+**/
 
-class Core
+class CK_Core
 {
 	/**
 	 * File
@@ -17,13 +22,6 @@ class Core
 	private $type;
 
 	/**
-	 * Not found
-	 *
-	 * @var string;
-	**/
-	private $not_found;
-
-	/**
 	 * Error HTML5
 	 *
 	 * @var string;
@@ -35,8 +33,7 @@ class Core
 	 * Construct
 	**/
 	public function __construct()
-	{
-	}
+	{}
 
 	/**
 	 * Verify
@@ -70,6 +67,10 @@ class Core
 			else if ( $this->type == 'config' )
 			{
 				$this->file = CK_APPLICATION . 'config/' . $this->file;
+			}
+			else if ( $this->type == 'model' )
+			{
+				$this->file = CK_APPLICATION . 'models/' . $this->file;
 			}
 			else if ( empty ( $yhis->type ) )
 			{

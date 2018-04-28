@@ -1,16 +1,9 @@
 <?php
 /**
  * @author @ShadowDLL
- * @version 0.1
- * @package ChuckNorrys
+ * @version 0.8
+ * @package ChuckFramework
 **/
-
-/**
- * BASE URL
- *
- * Example: http://127.0.0.1/ChuckNorrys/
-**/
-define ( 'CK_URI', 'http://localhost/ChuckFrame/' );
 
 /**
  * Directory Seperator
@@ -31,11 +24,6 @@ define ( 'CK_APPLICATION', CK_ROOT . 'application' . DS );
  * System Directory
 **/
 define ( 'CK_SYSTEM', CK_ROOT . 'system' . DS );
-
-/**
- * Upload Directory
-**/
-define ( 'CK_UPLOAD', CK_ROOT . 'view/_upload' . DS );
 
 /**
  * Debug Mode
